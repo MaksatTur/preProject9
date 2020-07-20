@@ -6,6 +6,8 @@ import kg.max.crud.model.User;
 import kg.max.crud.service.RoleService;
 import kg.max.crud.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -27,48 +29,48 @@ public class ApiController {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @GetMapping(value = "/all", produces = "application/json")
+    @GetMapping(value = "/users", produces = "application/json")
     @ResponseBody
-    public ServerResponse getAll() {
+    public ResponseEntity<List<User>> getAllUsers() {
         List<User> userList = userService.findAll();
-        return new ServerResponse("success", userList);
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/add", produces = "application/json")
+    @PostMapping(value = "/users", produces = "application/json")
     @ResponseBody
-    public ServerResponse addUser(@RequestBody @Validated UserDTO userDTO) {
+    public ResponseEntity<Void> addNewUser(@RequestBody @Validated UserDTO userDTO) {
 
         User user = convert(userDTO);
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
-            return new ServerResponse("fail", null);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
         userService.insert(user);
-        return new ServerResponse("success", null);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping(value = "/findOne/{userId}", produces = "application/json")
+    @GetMapping(value = "/users/{userId}", produces = "application/json")
     @ResponseBody
-    public ServerResponse getUser(@PathVariable("userId") long userId) {
+    public ResponseEntity<User> getUserById(@PathVariable("userId") long userId) {
         User user = userService.getUserById(userId);
         if (user != null) {
             userService.update(user);
-            return new ServerResponse("success", user);
+            return new ResponseEntity<>(user, HttpStatus.OK);
         }
-        return new ServerResponse("fail", null);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping(value = "/getId", produces = "application/json")
     @ResponseBody
-    public Long getLoggedInUserId(HttpServletRequest request){
+    public Long getLoggedInUserId(HttpServletRequest request) {
         Principal principal = request.getUserPrincipal();
         return userService.getUserIdByUsername(principal.getName());
     }
 
-    @PutMapping(value = "/edit", produces = "application/json")
+    @PutMapping(value = "/users", produces = "application/json")
     @ResponseBody
-    public ServerResponse editUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<Void> editUser(@RequestBody UserDTO userDTO) {
         User user = convert(userDTO);
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
             user.setPassword(userService.getUserPasswordById(user.getId()));
@@ -76,14 +78,14 @@ public class ApiController {
             user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         }
         userService.update(user);
-        return new ServerResponse("success", null);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "/delete/{userId}", produces = "application/json")
+    @DeleteMapping(value = "/users/{userId}", produces = "application/json")
     @ResponseBody
-    public ServerResponse deleteUser(@PathVariable("userId") long userId) {
+    public ResponseEntity<Void> deleteUser(@PathVariable("userId") long userId) {
         userService.delete(userId);
-        return new ServerResponse("success", null);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     private User convert(UserDTO userDTO) {

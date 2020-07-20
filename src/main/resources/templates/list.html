@@ -8,7 +8,6 @@
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <script type="text/javascript" th:src="@{/js/load.js}" src="../static/js/load.js"></script>
     <script type="text/javascript" th:src="@{/js/main.js}" src="../static/js/main.js"></script>
     <style>
         .bs-example {
@@ -180,12 +179,6 @@
                         class="ml-3">Admin</span></a>
                 <a th:href="@{#userTab}" class="list-group-item list-group-item-action border-0"><span
                         class="ml-3">User</span> </a>
-
-                <!--a th:href="@{/admin/}" class="list-group-item list-group-item-action active border-0"><span
-                        class="ml-3">Admin</span></a>
-                <a th:href="@{/user}" class="list-group-item list-group-item-action border-0"><span
-                        class="ml-3">User</span> </a-->
-
             </div>
         </div>
 
@@ -200,18 +193,11 @@
                     <div class="col-12 pl-4 pr-5 pt-3">
                         <ul id="usersTab" class="nav nav-tabs">
                             <li class="nav-item">
-                                <a th:href="@{#usersTabs}" class="nav-link active">Users table</a>
+                                <a th:href="@{#usersTabs}" id="h-usersTabs" class="nav-link active">Users table</a>
                             </li>
                             <li class="nav-item">
-                                <a th:href="@{#newUser}" class="nav-link">New User</a>
+                                <a th:href="@{#newUser}" id="h-newUser" class="nav-link">New User</a>
                             </li>
-
-                            <!--a th:href="@{/admin/}" class="nav-item nav-link active">
-                                Users table
-                            </a>
-                            <a th:href="@{/admin/add}" class="nav-item nav-link">
-                                New User
-                            </a-->
                         </ul>
                         <div class="tab-content">
                             <div class="list-group tab-pane fade show active" id="usersTabs">
@@ -246,7 +232,7 @@
                                 <div class="m-0 bg-white row">
                                     <div class="col-4"></div>
                                     <div class="col-4">
-                                        <form th:href="@{#usersTabs}" id="addNewUser">
+                                        <table id="addNewUser">
                                             <div class="form-group text-center pt-3">
                                                 <span class="text-center"><b>First name</b></span>
                                                 <input type="text" class="form-control" name="firstname"
@@ -294,10 +280,10 @@
 
                                             <div class="row pb-5">
                                                 <div class="col text-center">
-                                                    <button type="submit" class="btn btn-success">Add new user</button>
+                                                    <button id="addUserButton" class="btn btn-success">Add new user</button>
                                                 </div>
                                             </div>
-                                        </form>
+                                        </table>
                                     </div>
                                     <div class="col-4"></div>
                                 </div>
